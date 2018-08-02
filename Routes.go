@@ -16,10 +16,9 @@ func (a *App) initializeRoutes() {
 	//PUBLIC ENDPOINTS
 	a.Router.HandleFunc("/", homePage)
 	a.Router.HandleFunc("/login", LoginHandler).Methods("POST")
-	//a.Router.HandleFunc("/login", optionsRequest).Methods("OPTIONS")
 	a.Router.HandleFunc("/signup", RegisterHandler).Methods("POST")
 
-	//a.Router.HandleFunc("/users", a.getUsers).Methods("GET")
+	// USER Routes - Unprotected for testing
 	a.Router.HandleFunc("/user", a.createUser).Methods("POST")
 	a.Router.HandleFunc("/user/{id:[0-9]+}", a.getUser).Methods("GET")
 	a.Router.HandleFunc("/user/{id:[0-9]+}", a.updateUser).Methods("PUT")

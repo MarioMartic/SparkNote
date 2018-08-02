@@ -102,8 +102,7 @@ func (a *App) updateNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var n Note
-	n.ID = id
+	n := Note{ID:id}
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -126,10 +125,9 @@ func (a *App) deleteNote(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 
-	log.Print(id)
-
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid Note ID")
+		log.Print(err.Error())
 		return
 	}
 
@@ -137,6 +135,7 @@ func (a *App) deleteNote(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		respondWithError(w, http.StatusUnauthorized, "Invalid User!")
+		log.Print(err.Error())
 		return
 	}
 
@@ -146,13 +145,11 @@ func (a *App) deleteNote(w http.ResponseWriter, r *http.Request) {
 
 	if n.UserID != user.ID {
 		respondWithError(w, http.StatusForbidden, "Unauthorized access!")
-		log.Print(n.UserID, user.Username)
 		return
 	}
 
 	if err := n.deleteNote(a.DB); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
-		log.Print(err.Error())
 		return
 	}
 

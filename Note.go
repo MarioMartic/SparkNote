@@ -17,25 +17,25 @@ type Note struct {
 
 
 func (n *Note) getNote(db *sql.DB) error {
-	statement := fmt.Sprintf("SELECT id, title, body, user_id, archived, created_at FROM note WHERE id=%d AND deleted = 0", n.ID)
-	return db.QueryRow(statement).Scan(&n.ID, &n.Title, &n.Body, &n.UserID, &n.Archived, &n.CreatedAt)
+	statement := fmt.Sprintf("SELECT id, title, body, user_id, archived, created_at FROM note WHERE id=? AND deleted = 0")
+	return db.QueryRow(statement, n.ID).Scan(&n.ID, &n.Title, &n.Body, &n.UserID, &n.Archived, &n.CreatedAt)
 }
 
 func (n *Note) updateNote(db *sql.DB) error {
-	statement := fmt.Sprintf("UPDATE note SET title='%s', body='%s', archived=%d WHERE id=%d", n.Title, n.Body, n.Archived, n.ID)
-	_, err := db.Exec(statement)
+	statement := fmt.Sprintf("UPDATE note SET title=?, body=?, archived=? WHERE id=?")
+	_, err := db.Exec(statement, n.Title, n.Body, n.Archived, n.ID)
 	return err
 }
 
 func (n *Note) deleteNote(db *sql.DB) error {
-	statement := fmt.Sprintf("UPDATE note SET deleted = 1 WHERE id=%d", n.ID)
-	_, err := db.Exec(statement)
+	statement := fmt.Sprintf("UPDATE note SET deleted = 1 WHERE id=?")
+	_, err := db.Exec(statement, n.ID)
 	return err
 }
 
 func (n *Note) createNote(db *sql.DB) error {
-	statement := fmt.Sprintf("INSERT INTO note(title, body, archived, user_id) VALUES('%s', '%s', %d, %d)", n.Title, n.Body, n.Archived, n.UserID)
-	_, err := db.Exec(statement)
+	statement := fmt.Sprintf("INSERT INTO note(title, body, archived, user_id) VALUES(?, ?, ?, ?)")
+	_, err := db.Exec(statement, n.Title, n.Body, n.Archived, n.UserID)
 
 	if err != nil {
 		log.Print(err.Error())

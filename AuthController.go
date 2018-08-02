@@ -199,7 +199,7 @@ func getUserFromToken(w http.ResponseWriter, r *http.Request) (User, error){
 	claims, ok := extractClaims(tokenString)
 
 	if ok == false {
-		log.Printf("Sthg wrong!")
+		return User{}, fmt.Errorf("token error")
 	}
 
 	id:= int(claims["id"].(float64))
